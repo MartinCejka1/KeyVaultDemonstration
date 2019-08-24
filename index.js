@@ -28,6 +28,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
     ).then(function (secret){
         secretValue = 'HOUBY';
         console.log(secret.value);
+        return secretValue;
     }).catch(function (err) {
         throw (err);
     });
@@ -104,8 +105,9 @@ var server = http.createServer(function(request, response) {    // Create a serv
     //response.write("credentials as string: " + credentialString + "\n");
     //response.write("credentials another way: " + credentialsOtherWay + "\n");
     //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
-    // var secret = getSecretValue();                          // call function that returns the stored secret value
-    response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
+    var secretFromFunction = getSecretValue();                          // call function that returns the stored secret value
+    response.write("SECRET_VALUE: " + secretFromFunction + "\n");       // display the secret value
+    response.write("Global: " + secretValue + "\n");       // display the secret value
 
     var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
     response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
