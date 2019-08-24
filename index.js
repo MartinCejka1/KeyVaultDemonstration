@@ -4,39 +4,27 @@ const msRestAzure = require('ms-rest-azure');
 
 
 var server = http.createServer(function(request, response) {
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'}).then( (credentials) => {
-    const keyVaultClient = new KeyVault.KeyVaultClient(credentials);
-
-    var vaultUri = "https://" + "cs-keyVaultStorage" + ".vault.azure.net/";
-    
-    // We're setting the Secret value here and retrieving the secret value
-    keyVaultClient.setSecret(vaultUri, 'my-secret', 'test-secret-value', {})
-        .then( (kvSecretBundle, httpReq, httpResponse) => {
-            console.log("Secret id: '" + kvSecretBundle.id + "'.");
-            return keyVaultClient.getSecret(kvSecretBundle.id, {});
-        })
-        .then( (bundle) => {
-            console.log("Successfully retrieved 'test-secret'");
-            console.log(bundle);
-        })
-        .catch( (err) => {
-            console.log(err);
-        });
-
-    // Below code demonstrates how to retrieve a secret value
-    
-    keyVaultClient.getSecret(vaultUri, "cs-secret", "").then(function(response){
-         console.log(response);  
-         response.write("RESPONSE: ", response);  
-    })
-    });
-
-    
+    response.writeHead(200, {"Content-Type": "text/plain"});    
 });
 
 // The ms-rest-azure library allows us to login with MSI by providing the resource name. In this case the resource is Key Vault.
 // For public regions the resource name is Key Vault
+function getKeyVaultCredentials(){
+    return msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
+}
+
+function getKeyVaultSecret(credentials) {
+    let keyVaultClient = new KeyVault.KeyVaultClient(credentials);
+    return keyVaultClient.getSecret(KEY_VAULT_URI, 'secret', "");
+}
+
+getKeyVaultCredentials().then(
+    getKeyVaultSecret
+).then(function (secret){
+    response.write(`Your secret value is: ${secret.value}.`);
+}).catch(function (err) {
+    throw (err);
+});
 
 
 var port = process.env.PORT || 1337;
