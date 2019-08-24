@@ -5,7 +5,7 @@ var http = require('http');
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("Hello world!\n");    
+    response.write("test");
    // var secret = getItAll();
    // console.log("Server received: ", secret);
    // response.write(secret);
