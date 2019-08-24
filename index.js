@@ -1,15 +1,22 @@
-var http = require('http');
+/* 
+Author: Martin Cejka
+About: This project demonstrates working with a secrete value stored in Key Vault on Azure. See more in doc.txt
+*/
 
-// const KeyVault = require('azure-keyvault');
-// const msRestAzure = require('ms-rest-azure');
-// const WA = require('ibm-watson/assistant/v1');
+var http = require('http');     // load a pakcage to create server 
+require('dotenv').config();     // load a package to work with environmental variables so .env can be created and process.env have values from .env
 
-var server = http.createServer(function(request, response) {
+const KeyVault = require('azure-keyvault');     // load package to work with KeyVault resource on Azure
+const msRestAzure = require('ms-rest-azure');   // load package to work with azure account
+
+const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant on ibm cloud
+
+var server = http.createServer(function(request, response) {    // Create a server
+    response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
     
-    response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+    var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";      // store URL of Key Vault resource running on Azure
+    response.write("Keyvault URL: " + url + "\n");                          // display the URL 
     
-    //var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";
-
     //var credentials = getKeyVaultCredentials();
     //var credentialString = JSON.stringify(credentials);
     //var credentialsOtherWay = loginTheOtheWay();
@@ -21,17 +28,18 @@ var server = http.createServer(function(request, response) {
     //var secretOtherWayString = JSON.stringify(secretOtherWay);
 
     //var secretUsed = useSecret(secret);
-    
-    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\r\n");
-    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\r\n");
-    //response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
-    //response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
-    // response.write("Keyvault URL: " + url + os.EOL);
+
+    // Display environmental variables (environment in Azure should keep these values, localy is set as: LOCAL)
+    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\n");
+    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
+    response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
+    response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
     //response.write("credentials: " + credentials + "\n");
     //response.write("credentials as string: " + credentialString + "\n");
     //response.write("credentials another way: " + credentialsOtherWay + "\n");
     //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
-    //response.write("secret: " + secret + "\n");
+    var secret = getSecretValue();
+    response.write("SECRET_VALUE: " + secret + "\n");
     //response.write("secret as string: " + secretString + "\n");
     //response.write("secret another way: " + secretOtherWay + "\n");
     //response.write("secret another way: " + secretOtherWayString + "\n");
@@ -40,29 +48,24 @@ var server = http.createServer(function(request, response) {
     response.end(); //end the response
 });
 
-function getMSISecret(){
-    secret = process.env["MSI_SECRET"] || '5986117EDD954D678104AC1A415CCC90';
-    return secret;
+function getKeyVaultCredentials(){ // Logs in using envrionmental variables and returns credentials 
+    return msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
 }
 
-function getClientId(){
-    secret = process.env["CLIENT_ID"] || '8f87c1ea-37a1-4d12-a372-e67de6d7ff45';
-    return secret;
+function getKeyVaultSecret(credentials) {
+    let keyVaultClient = new KeyVault.KeyVaultClient(credentials); // creates Key Vault client using credentials and retrieves secret object called cs-secret from Key Vault resource
+    return keyVaultClient.getSecret('https://cs-keyvaultstorage.vault.azure.net/', 'cs-secret', "");
 }
 
-function getMSIEndpoint(){
-    secret = process.env["MSI_ENDPOINT"] || 'http://127.0.0.1:41076/MSI/token/';
-    return secret;
-}
-
-function getDomain(){
-  secret = process.env["MSI_DOMAIN"] || 'TEST';
-  return secret;
-}
-
-function getUrl(){
-    var vaultUri = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/"; 
-    return vaultUri;
+function getSecretValue(){ // returning value of the secret using functions getKeyVaultCredentials and getKeyVaultSecret in asynchronous way
+    getKeyVaultCredentials().then(
+        getKeyVaultSecret
+    ).then(function (secret){
+        console.log(`Your secret value is: ${secret.value}.`);
+        return secret.value;
+    }).catch(function (err) {
+        throw (err);
+    });
 }
 /*
 function getKeyVaultCredentials(){
