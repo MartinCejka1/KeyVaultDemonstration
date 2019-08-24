@@ -1,11 +1,11 @@
 var http = require('http');
-const KeyVault = require('azure-keyvault');
-const msRestAzure = require('ms-rest-azure');
+//const KeyVault = require('azure-keyvault');
+//const msRestAzure = require('ms-rest-azure');
 
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write(process.env["MSI_SECRET"]);    
+    response.write("Hello world!\n");    
    // var secret = getItAll();
    // console.log("Server received: ", secret);
    // response.write(secret);
