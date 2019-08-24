@@ -25,7 +25,7 @@ var server = http.createServer(function(request, response) {
 
     //var secretUsed = useSecret(secret);
     
-    response.write("MSI SECRET: " + msiSecret + "\n");
+    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\n");
     response.write("MSI ENDPOINT: " + msiEndpoint + "\n");
     response.write("CLIENT ID: " + clientId + "\n");
     response.write("DOMAIN: " + domain + "\n");
