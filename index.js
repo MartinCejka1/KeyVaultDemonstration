@@ -33,7 +33,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
     });
 }
 
-function useSecret(){
+function useSecret(){                 // Call Watson Assistant, send him message and return answer
     const testApi = new WA({
         version: '2019-02-28',
         iam_apikey: '6RiEt_DkhzxZO7PdVasxVTdv6KbHYHuA8UpK3V72qJtg', // secret
@@ -44,6 +44,7 @@ function useSecret(){
         input: {'text': 'Jak se mas?'}
         })
         .then(res => {
+          console.log(res);
           return(JSON.stringify(res, null, 2));
         })
         .catch(err => {
@@ -64,13 +65,13 @@ var server = http.createServer(function(request, response) {    // Create a serv
     getSecretValue();                                            // call function that returns the stored secret value
     response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
 
-    var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
-    response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
+    var message = useSecret();                                   // call function that uses secret as apikey for WA and returns response
+    response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
 
-    response.end(); //end the response
+    response.end();                                              //end the response
 });
 
-var port = process.env.PORT || 1337;
-server.listen(port);
+var port = process.env.PORT || 1337;                            // set PORT, if not set in .env, use 1337
+server.listen(port);                                            // start server
 
-console.log("Server running at http://localhost:%d", port);
+console.log("Server running at http://localhost:%d", port);     // print confirmation, visible in app log on Azure
