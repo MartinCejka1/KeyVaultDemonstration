@@ -6,6 +6,15 @@ const msRestAzure = require('ms-rest-azure');
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.write(process.env["MSI_SECRET"]);    
+    
+    getKeyVaultCredentials().then(
+        getKeyVaultSecret
+    ).then(function (secret){
+        console.log(`Your secret value is: ${secret.value}.`);
+        response.write(response);
+    }).catch(function (err) {
+        throw (err);
+    });
 });
 
 // The ms-rest-azure library allows us to login with MSI by providing the resource name. In this case the resource is Key Vault.
@@ -18,15 +27,6 @@ function getKeyVaultSecret(credentials) {
     let keyVaultClient = new KeyVault.KeyVaultClient(credentials);
     return keyVaultClient.getSecret('https://cs-keyvaultstorage.vault.azure.net/', 'cs-secret', "");
 }
-
-getKeyVaultCredentials().then(
-    getKeyVaultSecret
-).then(function (secret){
-    console.log(`Your secret value is: ${secret.value}.`);
-}).catch(function (err) {
-    throw (err);
-});
-
 
 var port = process.env.PORT || 1337;
 server.listen(port);
