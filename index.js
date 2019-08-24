@@ -9,7 +9,7 @@ require('dotenv').config();     // load a package to work with environmental var
 const KeyVault = require('azure-keyvault');     // load package to work with KeyVault resource on Azure
 const msRestAzure = require('ms-rest-azure');   // load package to work with azure account
 
-const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant on ibm cloud
+const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant (WA) on ibm cloud
 
 var server = http.createServer(function(request, response) {    // Create a server
     response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
@@ -38,8 +38,11 @@ var server = http.createServer(function(request, response) {    // Create a serv
     //response.write("credentials as string: " + credentialString + "\n");
     //response.write("credentials another way: " + credentialsOtherWay + "\n");
     //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
-    var secret = getSecretValue();
-    response.write("SECRET_VALUE: " + secret + "\n");
+    var secret = getSecretValue();                          // call function that returns the stored secret value
+    response.write("SECRET_VALUE: " + secret + "\n");       // display the secret value
+
+    var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
+    response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
     //response.write("secret as string: " + secretString + "\n");
     //response.write("secret another way: " + secretOtherWay + "\n");
     //response.write("secret another way: " + secretOtherWayString + "\n");
@@ -94,8 +97,8 @@ function getSecretOtherWay(credentialsOtherWay) {
     var url = getUrl();
     keyVaultClient.getSecret(url, 'watsonAssistentApikey', "").then((value)=>{return value;});
 }
-
-function useSecret(secret){
+*/
+function useSecret(){
     const testApi = new WA({
         version: '2019-02-28',
         iam_apikey: '6RiEt_DkhzxZO7PdVasxVTdv6KbHYHuA8UpK3V72qJtg', // secret
@@ -112,7 +115,7 @@ function useSecret(secret){
           return(err);
         });   
 }
-*/
+
 var port = process.env.PORT || 1337;
 server.listen(port);
 
