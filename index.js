@@ -1,8 +1,8 @@
 var http = require('http');
 
-const KeyVault = require('azure-keyvault');
-const msRestAzure = require('ms-rest-azure');
-const WA = require('ibm-watson/assistant/v1');
+// const KeyVault = require('azure-keyvault');
+// const msRestAzure = require('ms-rest-azure');
+// const WA = require('ibm-watson/assistant/v1');
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
@@ -67,7 +67,7 @@ function getUrl(){
     var vaultUri = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/"; 
     return vaultUri;
 }
-
+/*
 function getKeyVaultCredentials(){
     msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'}).then((value)=>{console.log(value);return value;});
 }
@@ -112,7 +112,7 @@ function useSecret(secret){
           return(err);
         });   
 }
-
+*/
 var port = process.env.PORT || 1337;
 server.listen(port);
 
