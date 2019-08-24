@@ -11,45 +11,7 @@ const msRestAzure = require('ms-rest-azure');   // load package to work with azu
 
 const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant (WA) on ibm cloud
 
-var server = http.createServer(function(request, response) {    // Create a server
-    response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
-    
-    var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";      // store URL of Key Vault resource running on Azure
-    response.write("Keyvault URL: " + url + "\n");                          // display the URL 
-    
-    //var credentials = getKeyVaultCredentials();
-    //var credentialString = JSON.stringify(credentials);
-    //var credentialsOtherWay = loginTheOtheWay();
-    //var credentialsOtherWayString = JSON.stringify(credentialsOtherWay);
 
-    //var secret = getKeyVaultSecret(credentials);
-    //var secretString = JSON.stringify(secret);
-    //var secretOtherWay = getSecretOtherWay(credentialsOtherWay);
-    //var secretOtherWayString = JSON.stringify(secretOtherWay);
-
-    //var secretUsed = useSecret(secret);
-
-    // Display environmental variables (environment in Azure should keep these values, localy is set as: LOCAL)
-    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\n");
-    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
-    response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
-    response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
-    //response.write("credentials: " + credentials + "\n");
-    //response.write("credentials as string: " + credentialString + "\n");
-    //response.write("credentials another way: " + credentialsOtherWay + "\n");
-    //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
-    var secret = getSecretValue();                          // call function that returns the stored secret value
-    response.write("SECRET_VALUE: " + secret + "\n");       // display the secret value
-
-    var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
-    response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
-    //response.write("secret as string: " + secretString + "\n");
-    //response.write("secret another way: " + secretOtherWay + "\n");
-    //response.write("secret another way: " + secretOtherWayString + "\n");
-    //response.write("WA returns: " + secretUsed + "\n");
-
-    response.end(); //end the response
-});
 
 function getKeyVaultCredentials(){ // Logs in using envrionmental variables and returns credentials 
     return msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
@@ -64,9 +26,6 @@ function getSecretValue(){ // returning value of the secret using functions getK
     getKeyVaultCredentials().then(
         getKeyVaultSecret
     ).then(function (secret){
-        console.log("In object called secre is: ", secret);
-        console.log("trying to retrieve value 1st way: ", secret.value);
-        console.log(`trying to retrieve value 2nd way: ${secret.value}.`);
         return secret.value;
     }).catch(function (err) {
         throw (err);
@@ -116,7 +75,47 @@ function useSecret(){
         .catch(err => {
           return(err);
         });   
-}
+    }
+    
+var server = http.createServer(function(request, response) {    // Create a server
+    response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
+    
+    var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";      // store URL of Key Vault resource running on Azure
+    response.write("Keyvault URL: " + url + "\n");                          // display the URL 
+    
+    //var credentials = getKeyVaultCredentials();
+    //var credentialString = JSON.stringify(credentials);
+    //var credentialsOtherWay = loginTheOtheWay();
+    //var credentialsOtherWayString = JSON.stringify(credentialsOtherWay);
+
+    //var secret = getKeyVaultSecret(credentials);
+    //var secretString = JSON.stringify(secret);
+    //var secretOtherWay = getSecretOtherWay(credentialsOtherWay);
+    //var secretOtherWayString = JSON.stringify(secretOtherWay);
+
+    //var secretUsed = useSecret(secret);
+
+    // Display environmental variables (environment in Azure should keep these values, localy is set as: LOCAL)
+    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\n");
+    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
+    response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
+    response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
+    //response.write("credentials: " + credentials + "\n");
+    //response.write("credentials as string: " + credentialString + "\n");
+    //response.write("credentials another way: " + credentialsOtherWay + "\n");
+    //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
+    var secret = getSecretValue();                          // call function that returns the stored secret value
+    response.write("SECRET_VALUE: " + secret + "\n");       // display the secret value
+
+    var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
+    response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
+    //response.write("secret as string: " + secretString + "\n");
+    //response.write("secret another way: " + secretOtherWay + "\n");
+    //response.write("secret another way: " + secretOtherWayString + "\n");
+    //response.write("WA returns: " + secretUsed + "\n");
+
+    response.end(); //end the response
+});
 
 var port = process.env.PORT || 1337;
 server.listen(port);
