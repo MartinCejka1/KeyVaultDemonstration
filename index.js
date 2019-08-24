@@ -8,7 +8,7 @@ var server = http.createServer(function(request, response) {
     
     response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
     
-    var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";
+    //var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";
 
     //var credentials = getKeyVaultCredentials();
     //var credentialString = JSON.stringify(credentials);
@@ -22,11 +22,11 @@ var server = http.createServer(function(request, response) {
 
     //var secretUsed = useSecret(secret);
     
-    response.write("MSI SECRET: " + process.env.MSI_SECRET + os.EOL);
-    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + os.EOL);
+    response.write("MSI SECRET: " + process.env.MSI_SECRET + "\r\n");
+    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\r\n");
     //response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
     //response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
-    response.write("Keyvault URL: " + url + os.EOL);
+    // response.write("Keyvault URL: " + url + os.EOL);
     //response.write("credentials: " + credentials + "\n");
     //response.write("credentials as string: " + credentialString + "\n");
     //response.write("credentials another way: " + credentialsOtherWay + "\n");
