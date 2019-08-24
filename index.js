@@ -5,7 +5,7 @@ const msRestAzure = require('ms-rest-azure');
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("Hello world!\n");    
+    response.write(process.env["MSI_SECRET"]);    
 });
 
 // The ms-rest-azure library allows us to login with MSI by providing the resource name. In this case the resource is Key Vault.
