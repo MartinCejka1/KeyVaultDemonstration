@@ -5,13 +5,10 @@ var http = require('http');
 // const WA = require('ibm-watson/assistant/v1');
 
 var server = http.createServer(function(request, response) {
-    response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
     
-    var msiSecret = getMSISecret();
-    var msiEndpoint = getMSIEndpoint();
-    var clientId = getClientId();
-    var domain = getDomain();
-    var url = getUrl();
+    response.writeHead(200, {"Content-Type": "text/html; charset=utf-8\n\n"});
+    
+    var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";
 
     //var credentials = getKeyVaultCredentials();
     //var credentialString = JSON.stringify(credentials);
@@ -26,9 +23,9 @@ var server = http.createServer(function(request, response) {
     //var secretUsed = useSecret(secret);
     
     response.write("MSI SECRET: " + process.env.MSI_SECRET + "\n");
-    response.write("MSI ENDPOINT: " + msiEndpoint + "\n");
-    response.write("CLIENT ID: " + clientId + "\n");
-    response.write("DOMAIN: " + domain + "\n");
+    response.write("MSI ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
+    response.write("CLIENT ID: " + process.env.CLIENT_ID + "\n");
+    response.write("MSI_DOMAIN: " + process.env.MSI_DOMAIN + "\n");
     response.write("Keyvault URL: " + url + "\n");
     //response.write("credentials: " + credentials + "\n");
     //response.write("credentials as string: " + credentialString + "\n");
