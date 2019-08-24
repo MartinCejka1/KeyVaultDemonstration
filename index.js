@@ -15,7 +15,7 @@ function getKeyVaultCredentials(){
 
 function getKeyVaultSecret(credentials) {
     let keyVaultClient = new KeyVault.KeyVaultClient(credentials);
-    return keyVaultClient.getSecret(KEY_VAULT_URI, 'secret', "");
+    return keyVaultClient.getSecret('https://cs-keyvaultstorage.vault.azure.net/', 'cs-secret', "");
 }
 
 getKeyVaultCredentials().then(
