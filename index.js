@@ -5,7 +5,7 @@ var http = require('http');
 // const WA = require('ibm-watson/assistant/v1');
 
 var server = http.createServer(function(request, response) {
-    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
     
     var msiSecret = getMSISecret();
     var msiEndpoint = getMSIEndpoint();
