@@ -10,7 +10,7 @@ const KeyVault = require('azure-keyvault');     // load package to work with Key
 const msRestAzure = require('ms-rest-azure');   // load package to work with azure account
 
 const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant (WA) on ibm cloud
-
+const SECRET_VALUE='';
 
 
 function getKeyVaultCredentials(){ // Logs in using envrionmental variables and returns credentials 
@@ -26,7 +26,8 @@ function getSecretValue(){ // returning value of the secret using functions getK
     getKeyVaultCredentials().then(
         getKeyVaultSecret
     ).then(function (secret){
-        return secret.value;
+        SECRET_VALUE = 'HOUBY';
+        console.log(secret.value);
     }).catch(function (err) {
         throw (err);
     });
@@ -76,7 +77,7 @@ function useSecret(){
           return(err);
         });   
     }
-    
+
 var server = http.createServer(function(request, response) {    // Create a server
     response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
     
@@ -104,8 +105,8 @@ var server = http.createServer(function(request, response) {    // Create a serv
     //response.write("credentials as string: " + credentialString + "\n");
     //response.write("credentials another way: " + credentialsOtherWay + "\n");
     //response.write("credentials another way as string: " + credentialsOtherWayString + "\n");
-    var secret = getSecretValue();                          // call function that returns the stored secret value
-    response.write("SECRET_VALUE: " + secret + "\n");       // display the secret value
+    // var secret = getSecretValue();                          // call function that returns the stored secret value
+    response.write("SECRET_VALUE: " + SECRET_VALUE + "\n");       // display the secret value
 
     var message = useSecret();                        // call function that uses secret as apikey for WA and returns response
     response.write("MESSAGE FROM WA: " + message + "\n");       // display message from Watson Assistant
