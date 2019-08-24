@@ -64,7 +64,9 @@ function getSecretValue(){ // returning value of the secret using functions getK
     getKeyVaultCredentials().then(
         getKeyVaultSecret
     ).then(function (secret){
-        console.log(`Your secret value is: ${secret.value}.`);
+        console.log("In object called secre is: ", secret);
+        console.log("trying to retrieve value 1st way: ", secret.value);
+        console.log(`trying to retrieve value 2nd way: ${secret.value}.`);
         return secret.value;
     }).catch(function (err) {
         throw (err);
