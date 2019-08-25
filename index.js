@@ -28,11 +28,29 @@ function getSecretValue(){ // returning value of the secret using functions getK
     ).then(function (secret){ 
         secretValue = secret.value;     // retrive value of the secret and put it into a global variable
         console.log(secret.value);      // print into a azure logs (resources --> your app --> log stream)
+        const testApi = new WA({ 
+          version: '2019-02-28',
+          iam_apikey: '6RiEt_DkhzxZO7PdVasxVTdv6KbHYHuA8UpK3V72qJtg',
+          url: 'https://gateway-fra.watsonplatform.net/assistant/api'
+        });
+        testApi.message({
+          workspace_id: '1f6ab258-6b10-4afc-9bc4-1c4564d7f93b',
+          input: {'text': 'Jak se mas?'}
+          })
+          .then(res => {
+            console.log(res.output.text);
+            return(JSON.stringify(res, null, 2));
+          })
+          .catch(err => {
+            return(err);
+          });   
     }).catch(function (err) {
         throw (err);
     });
+    
 }
 
+/*
 function useSecret(a){                 // Call Watson Assistant, send him message and return answer  
   console.log("A value of secret in UseSecret() is: ", a);
   const testApi = new WA({ 
@@ -52,7 +70,7 @@ function useSecret(a){                 // Call Watson Assistant, send him messag
           return(err);
         });   
     }
-
+*/
 var server = http.createServer(function(request, response) {    // Create a server
     response.writeHead(200, {"Content-Type": "text/plain; charset=utf-8"});
     
@@ -63,11 +81,11 @@ var server = http.createServer(function(request, response) {    // Create a serv
     response.write("MSI_SECRET: " + process.env.MSI_SECRET + "\n");
     response.write("MSI_ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
 
-    getSecretValue();                                            // call function that returns the stored secret value
+    var answer = getSecretValue();                                            // call function that returns the stored secret value
     response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
 
-    var message = useSecret(secretValue);                        // call function that uses secret as apikey for WA and returns response
-    response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
+    //var message = useSecret(secretValue);                        // call function that uses secret as apikey for WA and returns response
+    //response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
 
     response.end();                                              //end the response
 });
