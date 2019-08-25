@@ -35,7 +35,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
 
 function useSecret(apikey){                 // Call Watson Assistant, send him message and return answer  
   var a = apikey;
-  console.log("Compare- a: " + a + "and b: " + b);
+  console.log("show me apikey:", apikey);
   const testApi = new WA({
         version: '2019-02-28',
         iam_apikey: a,
