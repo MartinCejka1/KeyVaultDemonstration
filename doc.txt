@@ -63,6 +63,8 @@ This project demonstrates this by retrieving secret value and using it as apikey
           Finally it tests apikey in Watson Assistant that must be installed (npm install ibm-watson) by sending message and displaying answer
         - Using extension of Azure in Visual Studio code: View --> Extensions --> Azure App Servis (install --> restart VS code)
           Open the project in VS Code, click the new icon of Azure --> sign in --> deploy through VS code
+        - Displaying results (secret, response message) on the screen, using response.write and response.end
+
         
         
     
