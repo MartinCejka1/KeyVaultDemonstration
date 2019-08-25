@@ -1,3 +1,5 @@
+// This code was a source of information
+
 var http = require('http');
 //const KeyVault = require('azure-keyvault');
 //const msRestAzure = require('ms-rest-azure');
@@ -10,7 +12,7 @@ var server = http.createServer(function(request, response) {
    // console.log("Server received: ", secret);
    // response.write(secret);
 });
-/*
+
 // The ms-rest-azure library allows us to login with MSI by providing the resource name. In this case the resource is Key Vault.
 // For public regions the resource name is Key Vault
 function getKeyVaultCredentials(){
@@ -32,7 +34,7 @@ getKeyVaultCredentials().then(
     throw (err);
 });
 }
-*/
+
 var port = process.env.PORT || 1337;
 server.listen(port);
 

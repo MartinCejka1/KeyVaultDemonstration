@@ -1,6 +1,6 @@
 /* 
 Author: Martin Cejka
-About: This project demonstrates working with a secrete value stored in Key Vault on Azure. See more in doc.txt
+About: This project demonstrates working with a secret value stored in Key Vault on Azure. See more in doc.txt
 */
 
 var http = require('http');     // load a pakcage to create server 

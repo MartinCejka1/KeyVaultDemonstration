@@ -1,0 +1,68 @@
+This is a step by step guide to integrate a Key Vault resource into nodeJS project
+This project demonstrates this by retrieving secret value and using it as apikey to communicate with Watson Assistant
+
+1) Set up cloud environment in console
+    #install AZURE CLI
+        Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
+    #login
+        az login
+    #create a resource group in West Europe
+        az group create --name "cs-group" --location "West Europe"
+    #create a Key Vault feature for the resource group
+        az keyvault create --name "cs-keyVaultStorage" --resource-group "cs-group" --location "West Europe"
+    #add secret into a key vault
+        az keyvault secret set --vault-name "cs-keyVaultStorage" --name "cs-secret" --value "<secretValue>"
+    #create a service plan for webapps administration
+        az appservice plan create --name cs-servicePlan --resource-group cs-group
+    #create a deployment user (https://docs.microsoft.com/en-us/azure/app-service/deploy-local-git#configure-a-deployment-user)
+        az webapp deployment user set --user-name cs-user --password cs-password
+    #create a web app resource for the resource group (if it throws error, run it from console in Azure), keep value of deploymentLocalGitUrl
+        az webapp create --resource-group cs-group --plan cs-servicePlan --name cs-app --runtime "NODE|6.9" --deployment-local-git
+    #assign identity management to a created webapp and copy principalId
+        az webapp identity assign --name cs-app --resource-group "cs-group"
+    # set policy using principalId from previous command as object-id
+        az keyvault set-policy --name 'cs-keyVaultStorage' --object-id <principalId> --secret-permissions get
+
+2) Set up cloud environment on Azure portal
+    # create user-assigned managed identity
+        all resources --> user-assigned managed identity --> create (name: cs-identity)
+    # assign user-assigned managed identity to a webapp
+        search for web app (cs-app) --> identity --> user assigned --> select cs-identity
+
+3) Set up a git repository
+    #clone the the example repository (first link)
+        git clone https://github.com/Azure-Samples/key-vault-node-quickstart.git
+    #move to the repository
+        cd key-vault-node-quickstart
+    #install dependencies
+        npm install
+    #deploy app on azure using deploymentLocalGitUrl(in JSON output while running `az webapp create...`) and username from creating a deployment user
+        git remote add azure https://cs_user@cs-app.scm.azurewebsites.net/cs-app.git
+
+4) Make essential changes in the code
+    #set keyVault URL and make sure function getSecret() calls the same url
+        var url = "https://" + "cs-keyvaultstorage" + ".vault.azure.net/";
+    #comment code setting a secret
+    #uncomment code retrieving a secret (below)
+    #change name of the secret in getKeyVaultSecret() function
+
+5) Deploy app and check if it's running
+    # push configured reposiory, using password from creating a deployment user
+        git push azure master
+    # check application logs
+        portal.azure.com --> cs-app --> Log Stream (check successful deployment and secret value)
+
+6) Making additional changes         
+    #In this code, following additional changes have been made:
+        - displaying environmental variables MSI_SECRET and MSI_ENDPOINT that are being used for signing in with msRestAzure.loginWithAppServiceMSI.
+          These variables are automatically created in azure environment when you assign an identity
+        - installing dotenv (npm i dotenv) in order to run it locally, creating .env file when default MSI_ENDPOINT and MSI_SECRET valures are stored.
+          dotenv library must be imported into a file when it is used, .env must exist. Then you access values through process.env.MSI_SECRET
+          adding .env into a .gitignore file so the .env is not pushed on AZURE
+        - function getAndUseSecretValue(), retrives credentials, then secret which is an apikey to Watson Assistant stored in Azure keyVault
+          Finally it tests apikey in Watson Assistant that must be installed (npm install ibm-watson) by sending message and displaying answer
+        - Using extension of Azure in Visual Studio code: View --> Extensions --> Azure App Servis (install --> restart VS code)
+          Open the project in VS Code, click the new icon of Azure --> sign in --> deploy through VS code
+        
+        
+    
