@@ -28,15 +28,16 @@ function getSecretValue(){ // returning value of the secret using functions getK
     ).then(function (secret){ 
         secretValue = secret.value;     // retrive value of the secret and put it into a global variable
         console.log(secret.value);      // print into a azure logs (resources --> your app --> log stream)
+        process.env.APIKEY=secretValue;
     }).catch(function (err) {
         throw (err);
     });
 }
 
-function useSecret(apikey){                 // Call Watson Assistant, send him message and return answer  
+function useSecret(){                 // Call Watson Assistant, send him message and return answer  
   const testApi = new WA({ 
         version: '2019-02-28',
-        iam_apikey: apikey.toString(),
+        iam_apikey: process.env.APIKEY,
         url: 'https://gateway-fra.watsonplatform.net/assistant/api'
       });
       testApi.message({
@@ -65,7 +66,7 @@ var server = http.createServer(function(request, response) {    // Create a serv
     getSecretValue();                                            // call function that returns the stored secret value
     response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
 
-    var message = useSecret(secretValue);                                   // call function that uses secret as apikey for WA and returns response
+    var message = useSecret();                                   // call function that uses secret as apikey for WA and returns response
     response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
 
     response.end();                                              //end the response
