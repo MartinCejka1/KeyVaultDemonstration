@@ -64,6 +64,8 @@ This project demonstrates this by retrieving secret value and using it as apikey
         - Using extension of Azure in Visual Studio code: View --> Extensions --> Azure App Servis (install --> restart VS code)
           Open the project in VS Code, click the new icon of Azure --> sign in --> deploy through VS code
         - Displaying results (secret, response message) on the screen, using response.write and response.end
+          you can see results visiting url of the webapp (https://cs-app.azurewebsites.net/)
+          
 
         
         
