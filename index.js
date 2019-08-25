@@ -34,12 +34,11 @@ function getSecretValue(){ // returning value of the secret using functions getK
 }
 
 function useSecret(apikey){                 // Call Watson Assistant, send him message and return answer  
-  a = apikey;
-  b = a.toString();
+  var a = apikey;
   console.log("Compare- a: " + a + "and b: " + b);
   const testApi = new WA({
         version: '2019-02-28',
-        iam_apikey: b,
+        iam_apikey: a,
         url: 'https://gateway-fra.watsonplatform.net/assistant/api'
       });
       testApi.message({
