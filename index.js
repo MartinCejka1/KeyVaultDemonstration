@@ -38,7 +38,7 @@ function useSecret(apikey){                 // Call Watson Assistant, send him m
   console.log("show me apikey:", apikey);
   const testApi = new WA({
         version: '2019-02-28',
-        iam_apikey: a,
+        iam_apikey: a.value,
         url: 'https://gateway-fra.watsonplatform.net/assistant/api'
       });
       testApi.message({
