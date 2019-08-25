@@ -39,7 +39,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
           })
           .then(res => {
             console.log(res.output.text);
-            return(JSON.stringify(res.output.text, null, 2));
+            return(res.output.text);
           })
           .catch(err => {
             return(err);
@@ -81,7 +81,8 @@ var server = http.createServer(function(request, response) {    // Create a serv
     response.write("MSI_SECRET: " + process.env.MSI_SECRET + "\n");
     response.write("MSI_ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
 
-    var answer = getSecretValue();                                            // call function that returns the stored secret value
+    var answer = getSecretValue();
+    console.log("and the anser is: ", answer);                                            // call function that returns the stored secret value
     response.write("SECRET_VALUE: " + secretValue + "\n");          // display the secret value
     response.write('ANSWER FROM WA: ' + answer + "\n");                        // call function that uses secret as apikey for WA and returns response
     //response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
