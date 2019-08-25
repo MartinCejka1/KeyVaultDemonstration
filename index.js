@@ -11,7 +11,7 @@ const msRestAzure = require('ms-rest-azure');   // load package to work with azu
 
 const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant (WA) on ibm cloud
 global.secretValue='';
-
+const apikey = process.env.APIKEY;
 
 function getKeyVaultCredentials(){ // Logs in using envrionmental variables and returns credentials 
     return msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
@@ -28,17 +28,16 @@ function getSecretValue(){ // returning value of the secret using functions getK
     ).then(function (secret){ 
         secretValue = secret.value;     // retrive value of the secret and put it into a global variable
         console.log(secret.value);      // print into a azure logs (resources --> your app --> log stream)
-        process.env.APIKEY=secretValue;
     }).catch(function (err) {
         throw (err);
     });
 }
 
 function useSecret(){                 // Call Watson Assistant, send him message and return answer  
-  console.log("apikey: ", process.env.APIKEY);
+  console.log("apikey: ", apikey);
   const testApi = new WA({ 
         version: '2019-02-28',
-        iam_apikey: '6RiEt_DkhzxZO7PdVasxVTdv6KbHYHuA8UpK3V72qJtg',
+        iam_apikey: apikey,
         url: 'https://gateway-fra.watsonplatform.net/assistant/api'
       });
       testApi.message({
@@ -66,13 +65,14 @@ var server = http.createServer(function(request, response) {    // Create a serv
 
     getSecretValue();                                            // call function that returns the stored secret value
     response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
+    apikey = secretValue;
 
     var message = useSecret();                                   // call function that uses secret as apikey for WA and returns response
     response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
 
     response.end();                                              //end the response
 });
-
+ 
 var port = process.env.PORT || 1337;                            // set PORT, if not set in .env, use 1337
 server.listen(port);                                            // start server
 
