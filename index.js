@@ -30,7 +30,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
         console.log(secret.value);      // print into a azure logs (resources --> your app --> log stream)
         const testApi = new WA({ 
           version: '2019-02-28',
-          iam_apikey: '6RiEt_DkhzxZO7PdVasxVTdv6KbHYHuA8UpK3V72qJtg',
+          iam_apikey: secretValue,
           url: 'https://gateway-fra.watsonplatform.net/assistant/api'
         });
         testApi.message({
@@ -39,7 +39,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
           })
           .then(res => {
             console.log(res.output.text);
-            return(JSON.stringify(res, null, 2));
+            return(JSON.stringify(res.output.text, null, 2));
           })
           .catch(err => {
             return(err);
@@ -82,9 +82,8 @@ var server = http.createServer(function(request, response) {    // Create a serv
     response.write("MSI_ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
 
     var answer = getSecretValue();                                            // call function that returns the stored secret value
-    response.write("SECRET_VALUE: " + secretValue + "\n");       // display the secret value
-
-    //var message = useSecret(secretValue);                        // call function that uses secret as apikey for WA and returns response
+    response.write("SECRET_VALUE: " + secretValue + "\n");          // display the secret value
+    response.write('ANSWER FROM WA: ' + answer + "\n");                        // call function that uses secret as apikey for WA and returns response
     //response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
 
     response.end();                                              //end the response
