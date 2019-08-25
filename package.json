@@ -15,6 +15,7 @@
         "azure-keyvault": "^3.0.4",
         "dotenv": "^8.1.0",
         "ibm-watson": "^4.4.0",
+        "json-variables": "^8.0.31",
         "ms-rest-azure": "^2.5.7"
     }
 }
