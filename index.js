@@ -11,7 +11,7 @@ const msRestAzure = require('ms-rest-azure');   // load package to work with azu
 
 const WA = require('ibm-watson/assistant/v1');  // load package to work with watson assistant (WA) on ibm cloud
 global.secretValue='';
-
+global.answer = '';
 
 function getKeyVaultCredentials(){ // Logs in using envrionmental variables and returns credentials 
     return msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
@@ -39,7 +39,7 @@ function getSecretValue(){ // returning value of the secret using functions getK
           })
           .then(res => {
             console.log(res.output.text);
-            return(res.output.text);
+            answer = res.output.text;
           })
           .catch(err => {
             return(err);
@@ -81,13 +81,11 @@ var server = http.createServer(function(request, response) {    // Create a serv
     response.write("MSI_SECRET: " + process.env.MSI_SECRET + "\n");
     response.write("MSI_ENDPOINT: " + process.env.MSI_ENDPOINT + "\n");
 
-    var answer = getSecretValue();
-    console.log("and the anser is: ", answer);                                            // call function that returns the stored secret value
-    response.write("SECRET_VALUE: " + secretValue + "\n");          // display the secret value
+    getSecretValue()                                                 // call function that returns the stored secret value
+    response.write("SECRET_VALUE: " + secretValue + "\n");           // display the secret value
     response.write('ANSWER FROM WA: ' + answer + "\n");                        // call function that uses secret as apikey for WA and returns response
-    //response.write("MESSAGE FROM WA: " + message + "\n");        // display message from Watson Assistant
-
-    response.end();                                              //end the response
+  
+    response.end();                                                 //end the response
 });
  
 var port = process.env.PORT || 1337;                            // set PORT, if not set in .env, use 1337
