@@ -1,3 +1,4 @@
+# Author's documentation is in a file called doc.txt, below is the default readme from AZURE
 
 # Quickstart: Set and retrieve a secret from Azure Key Vault using a Node Web App 
 
